@@ -46,8 +46,9 @@ if __name__ == '__main__':
 	# df_final.to_list()
 	blah = series.tolist()
 	# plot = series.hist(alpha = 0.8)
-	plt.hist(blah, alpha = 0.8, bins = [100,200,24000])	
+	# plt.bar(blah, alpha = 0.8, bins = [100,200,24000])	
+	series.plot(kind = 'bar')
 	print series
 	# plot.get_figure().savefig('foo.png')
 	# df_final.plot(kind = "bar")
-	plt.savefig('bar.png')
+	plt.savefig('hist.png')
