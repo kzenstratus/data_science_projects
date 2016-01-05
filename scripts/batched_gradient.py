@@ -27,8 +27,8 @@ def gradient_descent(alpha, x, y, ep = 0.0001, max_iter = 10000):
     converged = False
 
     while not converged:        
-        part0 = 1.0/n * sum([(t0 + t1*x[i] - y[i]) for i range(n)])
-        part1 = 1.0/n * sum([(t0 + t1*x[i] - y[i])* x[i] for i range(n)])
+        part0 = 1.0/n * sum([(t0 + t1*x[i] - y[i]) for i in range(n)])
+        part1 = 1.0/n * sum([(t0 + t1*x[i] - y[i])* x[i] for i in range(n)])
     
         # update your theta each iteration
         t0 = t0 - alpha * part0
@@ -64,11 +64,13 @@ if __name__ == '__main__':
     shoppingStd = df_train.shopping_pt.std()
     costStd = df_train.cost.std()
 
-    df_train]"shopping_pt"] = df_train.shopping_pt.apply(func = normalize, args = (shoppingAvg,shoppingStd))
-	df_train["shopping_pt"] = df_train.shopping_pt/df_train.shopping_pt.mean()
-	# df_train.set_index(column =="day")
-	print df_train
-	df_train.plot(kind = 'scatter', y = "shopping_pt", x = "cost")
-	plt.savefig('test.png')
-	alpha = 0.01 # learning rate
-	m = len(df.index)
+    df_train["shopping_pt"] = df_train.shopping_pt.apply(func = normalize, args = (shoppingAvg,shoppingStd))
+    df_train["cost"] = df_train.cost.apply(func = normalize, args = (costAvg, costStd))
+
+	# df_train["shopping_pt"] = df_train.shopping_pt/df_train.shopping_pt.mean()
+	# # df_train.set_index(column =="day")
+	# print df_train
+	# df_train.plot(kind = 'scatter', y = "shopping_pt", x = "cost")
+	# plt.savefig('test.png')
+	# alpha = 0.01 # learning rate
+	# m = len(df.index)
