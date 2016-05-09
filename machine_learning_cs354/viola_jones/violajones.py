@@ -29,7 +29,7 @@ features: ndarray, extracted Haar features
 
 def getHaar (filepath, row, col, Npos, Nneg):
 	Nimg = Npos + Nneg
-	Nfeatures = 295937 #change this number if you need to use more/less features 
+	Nfeatures = 295936 #change this number if you need to use more/less features 
 	features = np.zeros((Nfeatures, Nimg))
 	
 	files = glob.glob(filepath+ "faces/*.jpg")
@@ -200,17 +200,16 @@ def getWeakClassifier(features, weight, label, Npos):
 
 # def main():
 #   row=64; col=64 #image size 
-#   Npos = 20 #number of face images
-#   Nneg = 20 #number of background images
-
-#   features= getHaar("./data/smalldata/", row, col, Npos, Nneg)
-
-
-#   weight = np.zeros((40,1))
-#   weight[:,0] = 0.025
-#  # weight [:,0] = [0.1250,0.1250,0.1250,0.1250,0.1667,0.1667,0.1667]
-#   label = np.zeros((40,1))
-#   label[:20] = 1
+#   Npos = 2000 #number of face images
+#   Nneg = 2000 #number of background images
+#
+#   features= getHaar("./data/", row, col, Npos, Nneg)
+#
+#
+#   weight = np.zeros((4000,1))
+#   weight[:,0] = 1.0/(Npos+Nneg)
+#   label = np.zeros((4000,1))
+#   label[:2000] = 1
 #   temp = getWeakClassifier (features, weight, label, Npos)
 #   return temp,features
 
