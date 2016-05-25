@@ -47,30 +47,6 @@ def train_online(train_data,label, max_iter,err):
     return weights
 
 
-def train_batch(train_data,label,max_iter):
-    # Init parameters
-    # weights   = np.random.rand(train_data.shape[1]) # 1x 28^2 random array
-    weights   = np.zeros(train_data.shape[1])
-    learn     = 0.1 # learning rate
-    bias      = random() # random bias
-    tot_error = float("inf")
-
-    while ((max_iter > 0) and (tot_error > 0)) :
-
-        tot_error = 0.0
-        for i in range(0,train_data.shape[0]):
-            output = calc_output( bias, weights, train_data[i])
-            local_error = label[i] - output
-            weights = update_weights(learn, local_error, train_data[i], weights)
-
-            bias +=  learn * local_error
-
-            tot_error += local_error * local_error
-
-        print "iteration", max_iter, "total_error",tot_error
-        max_iter -= 1
-
-    return weights, bias
 
 def test(weights,bias,label, test_data):
 
@@ -109,7 +85,7 @@ def k_cross(train_data, train_label, k, max_iter):
         # divide by k to normalize on 0-1 scale (purely for graph plotting)
         rv.append((float(i),tot_error/k))
 
-    plot_final(rv, "linear_cross_valid.png")
+    plot_final(rv, "output/linear_cross_valid.png")
 
     return min(rv, key = lambda x: x[1])
 
