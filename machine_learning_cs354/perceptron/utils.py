@@ -38,6 +38,9 @@ def plot_final(best,outfile):
     plt.scatter(x_pnts,y_pnts, c = "#1a75ff",linewidths = 0, alpha = 0.8)
     plt.savefig(outfile)
 
+def normalize(train_data):
+    return train_data * np.average(train_data)
+
 def partition(train_data, label, index, k):
     ''' Input:
             k     = total number of partitions

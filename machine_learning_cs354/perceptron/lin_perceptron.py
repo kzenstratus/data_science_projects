@@ -14,25 +14,21 @@ def calc_output( bias, weights, pic):
     # returns 1 if true, else 0
     return (1) if sum(weights * pic) + bias >= 0 else (-1)
 
-def update_weights(learn, local_error, pic, weights):
-    temp = learn * local_error * pic
-    return temp + weights
-
-def normalize(train_data):
-    return train_data * np.average(train_data)
-
-def train_online(train_data,label, max_iter,err):
+def train(train_data,label, max_iter,err):
     
-    dim = train_data.shape[1]
+    dim = train_data.shape[1] # num dimensions, ~750 
+    num_pics = train_data.shape[0] # num pics, ~2k
 
-    weights = np.zeros(train_data.shape[1])
-    num_pics = train_data.shape[0]
+    weights = np.zeros(dim) # size = dim
     tot_error = float("inf")
+
     while ((max_iter > 0) and (tot_error > err)) :
         tot_error = 0.0
 
         for i in range(0,num_pics) :
             x = normalize(train_data[i])
+
+            # calculate dot product
             predict = 1 if weights.dot(x.reshape(dim,1)) >= 0 else -1
 
             if (predict == -1) and (label[i] == 1):
@@ -76,21 +72,21 @@ def k_cross(train_data, train_label, k, max_iter):
         for j in range(0,k):
             k_data, k_label, valid_data, valid_label = partition(train_data, train_label, j, k)
 
-            weights = train_online(k_data, k_label, max_iter ,float(i))
+            weights = train(k_data, k_label, max_iter ,float(i))
             batch_error, pred_labels = test(weights, 0, valid_label, valid_data)
 
-            tot_error += float(batch_error)/(float(train_data.shape[0]))
+            tot_error += float(batch_error)/(float(valid_label.shape[0]))
             print "Iteration ",i,"Partition",j, "Error", batch_error, "Total Error: ", tot_error
 
         # divide by k to normalize on 0-1 scale (purely for graph plotting)
-        rv.append((float(i),tot_error/k))
+        rv.append((float(i),tot_error))
 
     plot_final(rv, "output/linear_cross_valid.png")
 
     return min(rv, key = lambda x: x[1])
 
 
-def main(size,is_online):
+def main(size,is_online, find_thresh = False):
     ''' 1  -> 3
         -1 -> 5
     '''
@@ -99,30 +95,30 @@ def main(size,is_online):
     train_label = read('data/train2k.label.35', size)
     test_data   = read('data/test200.databw.35',200)
     test_label  = read('data/test200.label.35',200)
+    bias        = 0 # set to 0 cause we centralized data
     max_iter    = 200
-    k           = 10 # how many partitions to break up cross-valid
+    k           = 10  # how many partitions to break up grid search cross-valid
+    thresh      = 6.0 # already computed best threshold is 6.0
+    outfile     = "output/batch_linear"
 
-    best = k_cross(train_data, train_label, k, max_iter)
-    print "THRESH IS ", best
-    thresh = best[0]
-
+    if find_thresh :
+        best = k_cross(train_data, train_label, k, max_iter)
+        print "THRESH IS ", best
+        thresh = best[0]
 
     if is_online:
-        weights = train_online(train_data, train_label, 1, thresh)
-        online_error, pred_labels = test(weights, 0, test_label, test_data)
-        np.save("output/online_linear",np.array(pred_labels))
-        print "ONLINE ERROR IS :", online_error
+        max_iter = 1
+        outfile = "output/online_linear"
 
-    else:
+    weights = train(train_data,train_label,max_iter, thresh)
+    pred_error, pred_labels  = test(weights, bias , test_label, test_data)
+    np.save(outfile , np.array(pred_labels))
 
-        weights = train_online(train_data,train_label,max_iter, thresh)
-        batch_error, pred_labels  = test(weights, 0 , test_label, test_data)
-        np.save("output/batch_linear", pred_labels)
-
-        print "BATCH ERROR IS ", batch_error
+    print "Final Error is : ", pred_error
 
 
-
+if __name__ == "__main__":
+    main(2000, False)
 
 
 
