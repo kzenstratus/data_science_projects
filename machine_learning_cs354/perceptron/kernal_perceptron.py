@@ -22,14 +22,16 @@ def rbf_predict(alpha, instances , train_data, x_t, gamma):
     for i in range(0, instances) :
         x_i = normalize(train_data[i])
         # x_i = train_data[i]
-        temp += alpha[i] * rbf_kernel(x_i ,x_t, gamma)
+        # temp += alpha[i] * rbf_kernel(x_i ,x_t, gamma)
+        temp += alpha[i] * lin_kernal(x_i ,x_t)
+
     return 1 if temp >= 0 else -1
 
 def lin_kernal(x_i, x_t):
     ''' Test to see if kernal produces same results as lin_percep'''
     return x_i.dot(x_t)
 
-def train(train_data,label, gamma, max_iter, err = 1):
+def train(train_data,label, gamma, max_iter, err = 6):
     instances = label.shape[0]
     alpha     = np.zeros(instances)
     tot_error = float("inf")
@@ -119,7 +121,7 @@ def main(size, is_online, find_gamma = False):
     test_label  = read('data/test200.label.35',200)
     k           = 10
     gamma       = math.pow(2,(-6))
-    max_iter    = 10    
+    max_iter    = 100   
     outfile     = "output/batch_kernal"
 
 
@@ -143,7 +145,7 @@ def main(size, is_online, find_gamma = False):
     print "Starting training ..."
 
     alpha = train(train_data, train_label, gamma, max_iter)
-    
+
     print "Starting testing ..."
     final_labels, tot_error = test(test_data, train_data, test_label, alpha, gamma)
     np.save( outfile, final_labels)

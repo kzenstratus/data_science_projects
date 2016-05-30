@@ -38,7 +38,7 @@ def train(train_data,label, max_iter,err):
                 tot_error += 1
                 weights -= x
 
-        # print "total error is ", max_iter, tot_error
+        print "total error is ", max_iter, tot_error
         max_iter -= 1
     return weights
 
@@ -118,7 +118,7 @@ def main(size,is_online, find_thresh = False):
 
 
 if __name__ == "__main__":
-    main(2000, False)
+    main(2000, True)
 
 
 

@@ -33,9 +33,9 @@ def plot_final(best,outfile):
     # for error, x in best:
     x_pnts = [x for (x,y) in best]
     y_pnts = [y for (x,y) in best]
-    # x_cent = [key[0]]
-    # y_cent = [key[1]]
-    plt.scatter(x_pnts,y_pnts, c = "#1a75ff",linewidths = 0, alpha = 0.8)
+
+    # plt.scatter(x_pnts,y_pnts, c = "#1a75ff",linewidths = 0, alpha = 0.8)
+    plt.plot(x_pnts, y_pnts, '.r-')
     plt.savefig(outfile)
 
 def normalize(train_data):
