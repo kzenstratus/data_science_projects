@@ -13,7 +13,12 @@ from utils import *
 from random import random
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
+import colorsys
 
+def color_gradient(n = 20):
+    hsv_tuples = [(0, 1, x*1.0/n) for x in range(n)]
+    rgb_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples)
+    return rgb_tuples
 
 def kernal(x, x_p, t_sq):
     ''' x_p = x'
@@ -45,16 +50,14 @@ def p_a():
     cov         = covar(x, t_sq)
     means       = np.zeros(N)
     outfile     = "output/pa.png"  
+    colors      = color_gradient(20)
     # np.random.seed(29)
 
-    # credit to 
-    # http://stackoverflow.com/questions/4873665/joining-two-2d-numpy-arrays-into-a-single-2d-array-of-2-tuples
-    # best = np.vstack(([x.T], [y.T])).T
     plt.figure()
 
     for i in range(num_samples):
         y = np.random.multivariate_normal(means,cov)
-        plt.plot(x, y, '.r-')
+        plt.plot(x, y, c =  colors[i])
     plt.savefig(outfile)
 
 def k_matrix(xtrain, t_sq):
@@ -66,7 +69,7 @@ def k_matrix(xtrain, t_sq):
     return matrix
 
 def p_b():
-
+    print "Starting p_b ..."
     outfile  = "output/pb.png"
     data     = read('data/gp.dat')
     N        = 100 # num points within a line 
@@ -75,12 +78,10 @@ def p_b():
 
     xtrain   = (data[:,0]).reshape((data.shape[0],1))
     ytrain   = (data[:,1]).reshape((data.shape[0],1))
-    sigma_sq = 1;
+    sigma_sq = 1;   
 
-    
-
-    means = np.zeros(N) 
-    var   = np.zeros(N)
+    means = np.zeros((N,1)) 
+    var   = np.zeros((N,1))
     ci    = np.zeros((N,2))
     for i in range(N):
 
@@ -106,7 +107,33 @@ def p_b():
     plt.plot(x, ci[:,1],'g')
 
     plt.savefig(outfile)
+    return means, var, ci, xtrain, ytrain
+
+def p_c(means,var,ci, xtrain, ytrain):
+    print "Starting p_c ..."
+    num_samples = 20
+    N           = 100
+    x           = np.linspace(0 ,1 , N)
+    colors      = color_gradient(20)
+    outfile     = "output/pc.png"
+    # 200 x 20 sized randomized matrix
+    rand_norm   = np.random.randn(N,num_samples) 
+    # xsim        = np.zeros(num_samples)
+    xsim        = []
+    plt.figure()
+    for i in range(num_samples):
+        xsim.append((np.diag( np.sqrt(var))).dot(rand_norm[:,i].reshape(1,100)).reshape(100,1) + means)
+        plt.plot( x, xsim[i], c = colors[i], alpha = 0.5)
+
+    plt.scatter(xtrain,ytrain, marker = "x")
+    plt.plot(x, means, 'b')
+    plt.plot(x, ci[:,0],'g')
+    plt.plot(x, ci[:,1],'g')
+
+    plt.savefig(outfile)
+
 if __name__ == "__main__":
-    p_a()
-    p_b()
+    # p_a()
+    means, var, ci, xtrain, ytrain = p_b()
+    p_c(means,var, ci, xtrain, ytrain)
 
