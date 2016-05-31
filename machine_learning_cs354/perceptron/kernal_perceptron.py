@@ -20,16 +20,16 @@ def rbf_predict(alpha, instances , train_data, x_t, gamma):
     temp = 0
     # calcualte local error and update c from 0 to curr instance
     for i in range(0, instances) :
-        x_i = normalize(train_data[i])
-        # x_i = train_data[i]
-        # temp += alpha[i] * rbf_kernel(x_i ,x_t, gamma)
-        temp += alpha[i] * lin_kernal(x_i ,x_t)
+        # x_i = normalize(train_data[i])
+        x_i = train_data[i]
+        temp += alpha[i] * rbf_kernel(x_i ,x_t, gamma)
+        # temp += alpha[i] * lin_kernal(x_i ,x_t)
 
     return 1 if temp >= 0 else -1
 
-def lin_kernal(x_i, x_t):
+# def lin_kernal(x_i, x_t):
     ''' Test to see if kernal produces same results as lin_percep'''
-    return x_i.dot(x_t)
+    # return x_i.dot(x_t)
 
 def train(train_data,label, gamma, max_iter, err = 6):
     instances = label.shape[0]
@@ -42,10 +42,9 @@ def train(train_data,label, gamma, max_iter, err = 6):
 
         for t in range(0,instances) :
 
-            x_t = normalize(train_data[t])
-            # x_t = train_data[t]
+            # x_t = normalize(train_data[t])
+            x_t = train_data[t]
             predict = rbf_predict(alpha, instances, train_data, x_t, gamma)
-            # alpha[t] = 0
 
             # Update c according to if output was right or wrong
             if predict != label[t]:
@@ -152,7 +151,7 @@ def main(size, is_online, find_gamma = False):
 
 
 if __name__ == "__main__":
-    main(2000, False)
+    main(2000, True)
 
     
 

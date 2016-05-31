@@ -12,18 +12,23 @@ import random
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
 
-def read(filename, size):
+def read(filename, size = -1):
     ''' Import data as a 2d array, each row = 1 pic
         size used if you want to use smaller data set
     '''
     data_pnts = []
+
     with open(filename) as infile:
-        for line in infile:
-            if size <= 0 :
-                break
-            else:
-                data_pnts.append([int(i) for i in line.split()])
-                size -= 1
+        if size == -1:
+            for line in infile:
+                data_pnts.append([float(i) for i in line.split()])
+        else:
+            for line in infile:
+                if size <= 0 :
+                    break
+                else:
+                    data_pnts.append([int(i) for i in line.split()])
+                    size -= 1
     return np.array(data_pnts)
 
 def plot_final(best,outfile):
