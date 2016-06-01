@@ -76,3 +76,26 @@ def partition(train_data, label, index, k):
     valid_label = label[start : end] 
 
     return k_data, k_label, valid_data, valid_label
+
+def test_np():
+    b_kern  = np.load('output/batch_kernal.npy')
+    b_lin   = np.load('output/batch_linear.npy')
+    on_kern = np.load('output/online_kernal.npy')
+    on_lin  = np.load('output/online_linear.npy')
+    real  = read('data/test200.label.35',200)
+
+    correct = [0,0,0,0]
+    size = float(len(real))
+    for i in range(int(size)):
+        if b_kern[i] == real[i]:
+            correct[0] += 1
+        if b_lin[i] == real[i]:
+            correct[1] += 1
+        if on_kern[i] == real[i]:
+            correct[2] += 1
+        if on_lin[i] == real[i]:
+            correct[3] += 1
+
+    print "b_kern: ", correct[0]/size, "b_lin: ", correct[1]/size,\
+            "on_kern: ", correct[2]/size, "on_lin: ", correct[3]/size 
+    return correct

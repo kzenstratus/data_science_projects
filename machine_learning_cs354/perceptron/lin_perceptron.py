@@ -123,6 +123,29 @@ def main(size,is_online, find_thresh = False):
 
     print "Final Error is : ", pred_error
 
+def test_np():
+    b_kern  = np.load('output/batch_kernal.npy')
+    b_lin   = np.load('output/batch_linear.npy')
+    on_kern = np.load('output/online_kernal.npy')
+    on_lin  = np.load('output/online_linear.npy')
+    real  = read('data/test200.label.35',200)
+
+    correct = [0,0,0,0]
+    size = len(pred)
+    for i in range(size):
+        if b_kern[i] == pred[i]:
+            correct[0] += 1
+        if b_lin[i] == pred[i]:
+            correct[1] += 1
+        if on_kern[i] == pred[i]:
+            correct[2] += 1
+        if on_lin[i] == pred[i]:
+            correct[3] += 1
+
+    print "b_kern: ", correct[0]/size, "b_lin: ", correct[1]/size,\
+            "on_kern: ", correct[2]/size, "on_lin: ", correct[3]/size 
+    return correct
+
 
 if __name__ == "__main__":
     main(2000, True)
