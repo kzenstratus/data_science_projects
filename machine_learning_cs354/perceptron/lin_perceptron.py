@@ -15,13 +15,18 @@ def calc_output( bias, weights, pic):
     return (1) if sum(weights * pic) + bias >= 0 else (-1)
 
 def train(train_data,label, max_iter,err):
-    
+
+    # Use max_iter to determine if online or batched
+    is_online = True if max_iter == 1 else False
+
+
     dim = train_data.shape[1] # num dimensions, ~750 
     num_pics = train_data.shape[0] # num pics, ~2k
 
     weights = np.zeros(dim) # size = dim
     tot_error = float("inf")
-
+    err_array = []# used purely for plotting errors
+    
     while ((max_iter > 0) and (tot_error > err)) :
         tot_error = 0.0
 
@@ -37,9 +42,11 @@ def train(train_data,label, max_iter,err):
             if (predict == 1) and (label[i] == -1):
                 tot_error += 1
                 weights -= x
-
+            err_array.append(tot_error)
         print "total error is ", max_iter, tot_error
         max_iter -= 1
+
+    if is_online: plot_errors(err_array, 'output/lin_online_err.png')
     return weights
 
 

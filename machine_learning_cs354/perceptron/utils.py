@@ -31,6 +31,14 @@ def read(filename, size = -1):
                     size -= 1
     return np.array(data_pnts)
 
+def plot_errors(errors,outfile):
+
+    # create an array from 1,..,n-1
+    x = np.linspace(0 ,len(errors), len(errors) +1)[:-1]
+    plt.figure()
+    plt.plot(x, errors, 'g', alpha = 0.7)
+    plt.savefig(outfile)
+
 def plot_final(best,outfile):
 
     plt.figure()
